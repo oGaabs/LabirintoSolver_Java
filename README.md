@@ -1,6 +1,6 @@
 [<div align=left><img alt="Tela de Exemplo - Labirinto Original" src="https://user-images.githubusercontent.com/53992405/169705226-1ae01f20-c97c-46ca-ae0b-a62c72531202.png" height="300" width="700"/> </div>][labirinto_1]
 
-# Cliente-Servidor-JogoDaForca_Java
+# LabirintoSolver_Java
 
 Este é um programa que resolve Labirintos de Arquivos txt, esse mesmo trabalho foi desenvolvido em trio, durante a matéria de Estrutura de Dados I para nosso querido professor Maligno (André) no COTUCA.
 
