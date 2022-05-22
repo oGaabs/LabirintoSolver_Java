@@ -4,7 +4,7 @@
 
 Este é um programa que resolve Labirintos de Arquivos txt, esse mesmo trabalho foi desenvolvido em trio, durante a matéria de Estrutura de Dados I para nosso querido professor Maligno (André) no COTUCA.
 
-Pretendemos, assim que possível, refatorar todo o código, de forma a melhorar legibilidade do código, implementar novos conceitos e melhorar a lógica geral, a versão inicial está na branch (["LabirintoSolver-V1.0.0"][initialbranch]), está é a versão original que foi entrega durante o curso, quando o projeto foi feito, a intenção era aplicar conceitos de estruturas de dados (LIFO: Pilha, FIFO: Fila), Leitura de Arquivos, Algoritmos de Backtracking e Trabalhando com Matriz/Coordenadas na Linguagem Java.
+Está é a versão original que foi entrega durante o curso, quando o projeto foi feito, a intenção era aplicar conceitos de Estruturas de Dados (LIFO: Pilha, FIFO: Fila), Leitura de Arquivos, Algoritmos de Backtracking e Trabalhando com Matriz/Coordenadas na Linguagem Java.
 
 
 ## Instruções
