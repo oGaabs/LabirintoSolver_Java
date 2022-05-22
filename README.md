@@ -41,7 +41,7 @@ Feel free to send suggestions, provide tips or even rebuild the code.
 
 #### Networks Maria:
 
-[<img alt="GitHub followers Maria" src="https://img.shields.io/github/followers/mariaxuxu?label=Follow&style=social" height="22" title="Follow me"/>](https://www.instagram.com/https.mariiax/)
+[<img alt="GitHub followers Maria" src="https://img.shields.io/github/followers/mariaxuxu?label=Follow&style=social" height="22" title="Follow me"/>](https://github.com/mariaxuxu)
 [<img alt="Instagram Maria" src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white&link=instagram.com/https.mariiax/" height="22" />](https://www.instagram.com/https.mariiax/)
 
 #### Networks Taylor:
