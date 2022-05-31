@@ -7,7 +7,7 @@ public class Teclado
                     new InputStreamReader (
                             System.in));
 
-    public static String getUmString ()
+    public static String getUmString()
     {
         String ret=null;
         try
