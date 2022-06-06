@@ -20,7 +20,7 @@ public class Teclado
         return ret;
     }
 
-    public static byte getUmByte () throws Exception
+    public static byte getUmByte() throws Exception
     {
         byte ret=(byte)0;
 
@@ -38,7 +38,7 @@ public class Teclado
         return ret;
     }
 
-    public static short getUmShort () throws Exception
+    public static short getUmShort() throws Exception
     {
         short ret=(short)0;
 
@@ -56,7 +56,7 @@ public class Teclado
         return ret;
     }
 
-    public static int getUmInt () throws Exception
+    public static int getUmInt() throws Exception
     {
         int ret=0;
 
@@ -74,7 +74,7 @@ public class Teclado
         return ret;
     }
 
-    public static long getUmLong () throws Exception
+    public static long getUmLong() throws Exception
     {
         //long ret=(long)0;
         //long ret=0;
@@ -94,7 +94,7 @@ public class Teclado
         return ret;
     }
 
-    public static float getUmFloat () throws Exception
+    public static float getUmFloat() throws Exception
     {
         //float ret=0;
         //float ret=(float)0.0;
@@ -114,7 +114,7 @@ public class Teclado
         return ret;
     }
 
-    public static double getUmDouble () throws Exception
+    public static double getUmDouble() throws Exception
     {
         //double ret=0;
         //double ret=(long)0;
@@ -135,7 +135,7 @@ public class Teclado
         return ret;
     }
 
-    public static char getUmChar () throws Exception
+    public static char getUmChar() throws Exception
     {
         char ret=' ';
 
@@ -157,7 +157,7 @@ public class Teclado
         return ret;
     }
 
-    public static boolean getUmBoolean () throws Exception
+    public static boolean getUmBoolean() throws Exception
     {
         boolean ret=false;
 
