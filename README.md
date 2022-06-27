@@ -30,7 +30,7 @@ Ter apenas uma Entrada(E) e Saida(S), onde o E é o ponto de partida e o S é o 
 
 ## Contributing
 
-Feel free to send suggestions, provide tips or even rebuild the code.
+Fique à vontade para enviar sugestões, dar dicas ou até mesmo reconstruir o código, mas mantenha.
 
 #### Networks Gabriel:
 
@@ -51,7 +51,7 @@ Feel free to send suggestions, provide tips or even rebuild the code.
 
 ## Equipe
 
-* **Gabriel Santana Silva** - *Owner* - [GitHub](https://github.com/PuniGC)
+* **Gabriel Santana Silva** - *Owner* - [Instagram](https://www.instagram.com/gabrielsants_dev/)
 * **Maria Clara Redin Benitez** - *Owner* - [Instagram](https://www.instagram.com/https.mariiax/)
 * **Taylor Matheus Burguês Gomes** - *Owner* - [GitHub](https://github.com/taylorburgues)
 
