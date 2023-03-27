@@ -1,32 +1,44 @@
-public class Coordenada{
+public class Coordenada {
     private int x;
     private int y;
 
-    public Coordenada (int x, int y){
+    public Coordenada(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getLinha() { return x; }
-    public int getColuna() { return y; }
+    public int getLinha() {
+        return x;
+    }
 
-    public void setLinha(int x) { this.x = x; }
+    public int getColuna() {
+        return y;
+    }
+
+    public void setLinha(int x) {
+        if (x < 0) 
+            throw new IllegalArgumentException("Valor inválido para coordenada x: " + x);
+        this.x = x;
+    }
+
     public void setColuna(int y) {
+        if (y < 0) 
+            throw new IllegalArgumentException("Valor inválido para coordenada y: " + y);
         this.y = y;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
+        if (this == obj)
+            return true;
 
-        if (obj == null) return false;
-
-        if (this.getClass() != obj.getClass()) return false;
+        if (obj == null || this.getClass() != obj.getClass())
+            return false;
 
         Coordenada cord = (Coordenada) obj;
 
-        if (this.x != cord.x) return false;
-        if (this.y != cord.y) return false;
+        if (this.x != cord.x || this.y != cord.y)
+            return false;
 
         return true;
     }
@@ -35,42 +47,40 @@ public class Coordenada{
     public int hashCode() {
         int ret = 666;
 
-        ret = ret*7+ Integer.valueOf(this.x).hashCode();
-        ret = ret*7+ Integer.valueOf(this.y).hashCode();
+        ret = ret * 7 + Integer.valueOf(this.x).hashCode();
+        ret = ret * 7 + Integer.valueOf(this.y).hashCode();
 
-        if (ret<0) ret=-ret;
+        if (ret < 0)
+            ret = -ret;
 
         return ret;
     }
 
     @Override
     public String toString() {
-        String coordX = this.x < 10 ? "0" + this.x : this.x +"";
-        String coordY = this.y < 10 ? "0" + this.y : this.y +"";
+        String coordX = String.format("%02d", x);
+        String coordY = String.format("%02d", y);
 
         return "(" + coordX + "," + coordY + ")";
     }
 
     // construtor de copia
-    public Coordenada (Coordenada modelo) throws Exception
-    {
-        if(modelo == null)
+    public Coordenada(Coordenada model) throws Exception {
+        if (model == null)
             throw new Exception("Modelo ausente");
 
-        this.x = modelo.x;
-        this.y = modelo.y;
+        this.x = model.x;
+        this.y = model.y;
     }
 
-    public Object clone ()
-    {
+    @Override
+    public Object clone() {
         Coordenada ret = null;
 
-        try
-        {
+        try {
             ret = new Coordenada(this);
+        } catch (Exception ignored) {
         }
-        catch(Exception ignored)
-        {}
 
         return ret;
     }

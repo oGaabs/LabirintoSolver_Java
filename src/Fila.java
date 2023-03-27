@@ -1,224 +1,228 @@
 import java.lang.reflect.*;
-
-public class Fila <X> implements Cloneable
-{
-    private Object[] elemento; //private X[] elemento;
-    private int      tamanhoInicial;
-    private int      ultimo=-1; //vazio
+import java.util.Arrays;
+// FIFO
+public class Fila<X> implements Cloneable {
+    private Object[] items;
+    //private int size = 0;
+    private int tamanhoInicial;
+    private int ultimo = -1;
     private int primeiro = 0;
+    
 
-
-    public Fila(int tamanho) throws Exception
-    {
-        if (tamanho<=0)
-            throw new Exception ("Tamanho invalido");
-
-        this.elemento       = new Object [tamanho]; //this.elemento=new X [tamanho];
-        this.tamanhoInicial = tamanho;
-    }
-
-    public Fila ()
-    {
-        this.elemento       = new Object [10]; //this.elemento=new X [10];
-        this.tamanhoInicial = 10;
-    }
-
-    private void redimensioneSe (float fator)
-    {
-        // X[] novo = new X [Math.round(this.elemento.length*fator)];
-        Object[] novo = new Object [Math.round(this.elemento.length*fator)];
-
-        for(int i=0; i<=this.ultimo; i++)
-            novo[i] = this.elemento[i];
-
-        this.elemento = novo;
-    }
-
-    private X meuCloneDeX (X x)
-    {
-        X ret=null;
-
-        try
-        {
-            Class<?> classe         = x.getClass();
-            Class<?>[] tipoDosParms = null;
-            Method metodo           = classe.getMethod("clone",tipoDosParms);
-            Object[] parms          = null;
-            ret                     = (X)metodo.invoke(x,parms);
+    public static class QueueException extends Exception {
+        public QueueException(String errorMessage) {
+            super(errorMessage);
         }
-        catch(NoSuchMethodException erro)
-        {}
-        catch(IllegalAccessException erro)
-        {}
-        catch(InvocationTargetException erro)
-        {}
-
-        return ret;
     }
 
-    public void guardeUmItem (X x) throws Exception // LIFO
-    {
-        if (x==null)
-            throw new Exception ("Falta o que guardar");
+    public Fila(int tamanho) throws QueueException {
+        if (tamanho <= 0)
+            throw new QueueException("Tamanho invalido");
 
-        if (this.ultimo+1==this.elemento.length) // cheia
-            this.redimensioneSe (2.0F);
+        this.items = new Object[tamanho];
+    }   
+
+    public Fila() {
+        this.items = new Object[10];
+    }
+
+    private void redimensioneSe(float fator) {
+        int novoTamanho = Math.round(this.items.length * fator);
+        Object[] newArray = Arrays.copyOf(this.items, novoTamanho);
+
+        this.items = newArray;
+    }   
+
+
+
+    public void guardeUmItem(X x) throws QueueException
+    {
+        if (x == null)
+            throw new QueueException("Falta o que guardar");
+
+        if (this.ultimo + 1 == this.items.length) // cheia
+            this.redimensioneSe(2.0F);
 
         this.ultimo++;
 
         if (x instanceof Cloneable)
-            this.elemento[this.ultimo]=meuCloneDeX(x);
+            this.items[this.ultimo] = meuCloneDeX(x);
         else
-            this.elemento[this.ultimo]=x;
+            this.items[this.ultimo] = x;
     }
 
-    public X recupereUmItem () throws Exception // LIFO
+    public X recupereUmItem() throws QueueException
     {
-        if (this.ultimo==-1) // vazia
-            throw new Exception ("Nada a recuperar");
+        if (this.ultimo == -1) // vazia
+            throw new QueueException("Nada a recuperar");
 
-        X ret=null;
-        if (this.elemento[this.ultimo] instanceof Cloneable)
-            ret = meuCloneDeX((X)this.elemento[this.primeiro]);
+        X ret = null;
+        if (this.items[this.ultimo] instanceof Cloneable)
+            ret = meuCloneDeX((X) this.items[this.primeiro]);
         else
-            ret = (X)this.elemento[this.primeiro];
+            ret = (X) this.items[this.primeiro];
 
         return ret;
     }
 
-    public void removaUmItem () throws Exception // LIFO
+    public void removaUmItem() throws QueueException
     {
-        if (this.ultimo==-1) // vazia
-            throw new Exception ("Nada a remover");
+        if (this.ultimo == -1) // vazia
+            throw new QueueException("Nada a remover");
 
-        for(int i =0; i <= this.ultimo -1; i++)
-        {
-            this.elemento[i] = this.elemento[i + 1];
+        for (int i = 0; i <= this.ultimo - 1; i++) {
+            this.items[i] = this.items[i + 1];
         }
 
-        this.elemento[this.ultimo] = null;
-        this.ultimo--;
+        this.items[this.ultimo] = null;
+        this.ultimo--; 
 
-        if (this.elemento.length>this.tamanhoInicial &&
-                this.ultimo+1<=Math.round(this.elemento.length*0.25F))
-            this.redimensioneSe (0.5F);
+        if (this.items.length > this.tamanhoInicial &&
+                this.ultimo + 1 <= Math.round(this.items.length * 0.25F))
+            this.redimensioneSe(0.5F);
     }
 
-    public boolean isCheia ()
-    {
-        if(this.ultimo+1==this.elemento.length)
-            return true;
-
-        return false;
+    public void clear(){
+        this.items = new Object[10];
+        this.ultimo = -1;
     }
 
-    public boolean isVazia ()
-    {
-        if(this.ultimo==-1)
-            return true;
-
-        return false;
+    public int tamanho() {
+        return this.ultimo + 1;
     }
+    /* 
+    public boolean isVazia() {
+        return size == 0;
+    }
+    
+    public boolean isCheia() {
+        return size == items.length;
+    }*/
 
-    public String debugString ()
-    {
-        String ret = (this.ultimo+1) + " elemento(s)";
-
-        if (this.ultimo!=-1){
-            ret += ": (";
-            for (int i = 0; i < this.ultimo+1; i++) {
-                ret+= this.elemento[i].toString() + ",";
+    public boolean isVazia() {
+        return this.ultimo == -1;
+    }
+    
+    public boolean isCheia() {
+        return this.ultimo + 1 == this.items.length;
+    }
+    
+    public String debugString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.ultimo + 1).append(" elemento(s)");
+        
+        if (this.ultimo != -1) {
+            sb.append(": (");
+            for (int i = 0; i <= this.ultimo; i++) {
+                sb.append(this.items[i]).append(",");
             }
+            sb.setLength(sb.length() - 1); // remove a última vírgula
+            sb.append(")");
         }
-
-        return ret+")";
+        
+        return sb.toString();
     }
 
-    public String toString ()
-    {
-        String ret = (this.ultimo+1) + " elemento(s)";
 
-        if (this.ultimo!=-1)
-            ret += ", sendo o ultimo "+this.elemento[this.ultimo] + ", sendo o primeiro "+this.elemento[this.primeiro];
+    public X peek() {
+        if (this.ultimo == -1)
+            throw new IllegalStateException("Fila vazia");
+        
+        return (X) items[0];
+    }
+    
+    public String toString() {
+        String ret = (this.ultimo + 1) + " elemento(s)";
+
+        if (this.ultimo != -1)
+            ret += ", sendo o ultimo " + this.items[this.ultimo] + ", sendo o primeiro "
+                    + this.items[this.primeiro];
 
         return ret;
     }
 
-    public boolean equals (Object obj)
-    {
-        if(this==obj)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
 
-        if(obj==null)
+        if (obj == null)
             return false;
 
-        if(this.getClass()!=obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
 
         Fila<X> pil = (Fila<X>) obj;
 
-        if(this.ultimo!=pil.ultimo)
+        if (this.ultimo != pil.ultimo)
             return false;
-        if(this.primeiro!=pil.primeiro)
-            return false;
-
-        if(this.tamanhoInicial!=pil.tamanhoInicial)
+        if (this.primeiro != pil.primeiro)
             return false;
 
-        for(int i=0 ; i<this.ultimo;i++)
-            if(!this.elemento[i].equals(pil.elemento[i]))
+        if (this.tamanhoInicial != pil.tamanhoInicial)
+            return false;
+
+        for (int i = 0; i < this.ultimo; i++)
+            if (!this.items[i].equals(pil.items[i]))
                 return false;
 
         return true;
     }
 
-    public int hashCode ()
-    {
-        int ret=666/*qualquer positivo*/;
+    public int hashCode() {
+        int ret = 23;
 
-        ret = ret*7/*primo*/ + Integer.valueOf(this.ultimo        ).hashCode();
-        ret = ret*7/*primo*/ + Integer.valueOf(this.tamanhoInicial).hashCode();
+        ret = ret * 7 + Integer.valueOf(this.ultimo).hashCode();
+        ret = ret * 7 + Integer.valueOf(this.tamanhoInicial).hashCode();
 
-        for (int i=0; i<this.ultimo; i++)
-            ret = ret*7/*primo*/ + this.elemento[i].hashCode();
+        for (int i = 0; i < this.ultimo; i++)
+            ret = ret * 7 + this.items[i].hashCode();
 
-        if (ret<0)
-            ret=-ret;
+        if (ret < 0)
+            ret = -ret;
 
         return ret;
     }
 
-    // construtor de copia
-    public Fila (Fila<X> modelo) throws Exception
-    {
-        if(modelo == null)
-            throw new Exception("Modelo ausente");
+    public Fila(Fila<X> model) throws CloneNotSupportedException {
+        if (model == null)
+            throw new CloneNotSupportedException("Modelo ausente");
 
-        this.tamanhoInicial = modelo.tamanhoInicial;
-        this.ultimo         = modelo.ultimo;
+        this.items = new Object[model.items.length]; 
 
-        // para fazer a copia dum vetor
-        // precisa criar um vetor novo, com new
-        // nao pode fazer this.elemento=modelo.element
-        // pois se assim fizermos estaremos com dois
-        // objetos, o this e o modelo, compartilhando
-        // o mesmo vetor
-        this.elemento = new Object[modelo.elemento.length]; // this.elemento = new X [modelo.elemento.length];
+        for (int i = 0; i < model.items.length; i++){
+            this.items[i] = model.items[i];
+        }
 
-        for(int i=0 ; i<modelo.elemento.length ; i++)
-            this.elemento[i] = modelo.elemento[i];
+        this.tamanhoInicial = model.tamanhoInicial;
+        this.ultimo = model.ultimo;
     }
 
-    public Object clone ()
-    {
-        Fila<X> ret=null;
+    private X meuCloneDeX(X x) {
+        X ret = null;
 
-        try
-        {
-            ret = new Fila<X>(this);
+        try {
+            Class<?> classe = x.getClass();
+            Class<?>[] tipoDosParms = null;
+            Method metodo = classe.getMethod("clone", tipoDosParms);
+            Object[] parms = null;
+            ret = (X) metodo.invoke(x, parms);
+        } catch (NoSuchMethodException erro) {
+        } catch (IllegalAccessException erro) {
+        } catch (InvocationTargetException erro) {
         }
-        catch(Exception erro)
-        {}
+
+        return ret;
+    }
+
+    @Override
+    public Object clone() {
+        Fila<X> ret = null;
+
+        try {
+            ret = new Fila<X>(this);
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError(e);
+        }
 
         return ret;
     }

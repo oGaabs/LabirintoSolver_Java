@@ -8,17 +8,23 @@ public class Labirinto implements Cloneable {
     private Coordenada posicaoEntrada;
     private boolean encontrouSaida = false;
 
-    public Labirinto(Arquivo arqLabirinto) throws Exception {
+    public static class LabirintoException extends Exception { 
+        public LabirintoException(String errorMessage) {
+            super(errorMessage);
+        }
+    }
+
+    public Labirinto(FileManager arqLabirinto) throws Exception, LabirintoException {
         // Pega o numero de linhas, lendo a primeira linha
-        this.qtdLinhas = arqLabirinto.pegaUmInt();
+        this.qtdLinhas = arqLabirinto.readIntLine();
 
         // Pega o numero de colunas, lendo a primeira linha
-        String segundaLinha = arqLabirinto.pegaProximaLinha();
+        String segundaLinha = arqLabirinto.readLine();
 
         this.qtdColunas = segundaLinha.length();
 
         if (this.qtdLinhas == 0 || this.qtdColunas == 0)
-            throw new Exception("Labirinto inválido");
+            throw new LabirintoException("Labirinto inválido");
 
         // Cria o labirinto, desconsiderando a primeira linha
         this.labirinto = new char[qtdLinhas][qtdColunas];
@@ -28,40 +34,40 @@ public class Labirinto implements Cloneable {
         String linha;
         int numLinha = 1;
 
-        while ((linha = arqLabirinto.pegaProximaLinha()) != null) {
+        while ((linha = arqLabirinto.readLine()) != null) {
             inserirLinha(linha, numLinha);
             numLinha++;
         }
 
-        arqLabirinto.fecharArquivo();
+        arqLabirinto.closeFile();
 
         if (numLinha != this.qtdLinhas)
-            throw new Exception("Quantidade de linhas diferente da especificada");
+            throw new LabirintoException("Quantidade de linhas diferente da especificada");
 
         // Verifica se o labirinto possui uma unica entrada e saida
         verificarSePossuiEntradasSaidas();
         checarParedes();
 
-        System.out.println("Labirinto Original! Encontrado o caminho...");
+        System.out.println("Labirinto Original! Foi reconhecido...");
         imprimeLabirinto();
     }
 
-    private void inserirLinha(String linha, int numeroDaLinha) throws Exception {
+    private void inserirLinha(String linha, int numeroDaLinha) throws LabirintoException {
         verificaoDeLinha(linha, numeroDaLinha);
 
         this.labirinto[numeroDaLinha] = linha.toCharArray();
     }
 
-    private void verificaoDeLinha(String linha, int numeroDaLinha) throws Exception {
+    private void verificaoDeLinha(String linha, int numeroDaLinha) throws LabirintoException {
         int tamanhoLinha = linha.length();
 
-        //Verifica se o numero de colunas é válido
+        // Verifica se o numero de colunas é válido
         if (tamanhoLinha != qtdColunas)
-            throw new Exception("O Labirinto possui linhas maiores que outras");
+            throw new LabirintoException("O Labirinto possui linhas maiores que outras");
 
         // Verifica se o numero de linhas é válido
         if (numeroDaLinha < 0 || numeroDaLinha >= qtdLinhas)
-            throw new Exception("O Labirinto possui mais linhas do que o especificado");
+            throw new LabirintoException("O Labirinto possui mais linhas do que o especificado");
 
         String caracteresPermitidos = "# ES";
 
@@ -70,7 +76,7 @@ public class Labirinto implements Cloneable {
 
             // Verifica se a linha possui um caractere invalido
             if (caracteresPermitidos.indexOf(caractere) == -1)
-                throw new Exception("Caractere ('" + caractere + "') inválido, encontrado no labirinto");
+                throw new LabirintoException("Caractere ('" + caractere + "') inválido, encontrado no labirinto");
 
             switch (caractere) {
                 case 'E' -> {
@@ -79,7 +85,8 @@ public class Labirinto implements Cloneable {
                     posicaoEntrada = new Coordenada(numeroDaLinha, numeroColuna);
                 }
                 case 'S' -> numeroDeSaidas++;
-                default -> {}
+                default -> {
+                }
             }
         }
     }
@@ -109,7 +116,8 @@ public class Labirinto implements Cloneable {
         retrocederCaminho(caminho);
     }
 
-    private void andarPosicoesAdjacentes(Fila<Coordenada> filaDeAdjacentes, Pilha<Fila<Coordenada>> possibilidades, Pilha<Coordenada> caminho) throws Exception {
+    private void andarPosicoesAdjacentes(Fila<Coordenada> filaDeAdjacentes, Pilha<Fila<Coordenada>> possibilidades,
+            Pilha<Coordenada> caminho) throws Exception {
         acharPosicoesAdjacentes(filaDeAdjacentes);
 
         // Modo regressivo
@@ -118,16 +126,15 @@ public class Labirinto implements Cloneable {
                 atual = caminho.recupereUmItem();
                 caminho.removaUmItem();
                 if (caminho.isVazia())
-                    throw new Exception("Saida não encontrada");
+                    throw new LabirintoException("Saida não encontrada");
 
                 inserirCaracterNaCoordenada(' ', atual);
 
                 filaDeAdjacentes = possibilidades.recupereUmItem();
                 possibilidades.removaUmItem();
                 if (possibilidades.isVazia())
-                    throw new Exception("Não existe caminho que leva da entrada  até a saída ");
-            }
-            while (filaDeAdjacentes.isVazia());
+                    throw new LabirintoException("Não existe caminho que leva da entrada  até a saída ");
+            } while (filaDeAdjacentes.isVazia());
         }
 
         // Modo progressivo
@@ -172,9 +179,9 @@ public class Labirinto implements Cloneable {
         // Posição à direita
         adicionarPosicaoAdjacente(filaDeAdjacentes, linha, coluna + 1);
         // Posição à cima
-        adicionarPosicaoAdjacente(filaDeAdjacentes, linha - 1, coluna );
+        adicionarPosicaoAdjacente(filaDeAdjacentes, linha - 1, coluna);
         // Posição à baixo
-        adicionarPosicaoAdjacente(filaDeAdjacentes, linha + 1, coluna );
+        adicionarPosicaoAdjacente(filaDeAdjacentes, linha + 1, coluna);
         // Posição à esquerda
         adicionarPosicaoAdjacente(filaDeAdjacentes, linha, coluna - 1);
     }
@@ -191,35 +198,35 @@ public class Labirinto implements Cloneable {
             filaDeAdjacentes.guardeUmItem(new Coordenada(linha, coluna));
     }
 
-    private void verificarSePossuiEntradasSaidas() throws Exception {
+    private void verificarSePossuiEntradasSaidas() throws LabirintoException {
         if (numeroDeEntradas == 0)
-            throw new Exception("Não existe entrada no labirinto");
+            throw new LabirintoException("Não existe entrada no labirinto");
         if (numeroDeEntradas > 1)
-            throw new Exception("O labirinto possui mais de uma entrada");
+            throw new LabirintoException("O labirinto possui mais de uma entrada");
 
         if (numeroDeSaidas == 0)
-            throw new Exception("Não existe saida no labirinto");
+            throw new LabirintoException("Não existe saida no labirinto");
         if (numeroDeSaidas > 1)
-            throw new Exception("O labirinto possui mais de uma saida");
+            throw new LabirintoException("O labirinto possui mais de uma saida");
     }
 
-    private void checarParedes() throws Exception {
+    private void checarParedes() throws LabirintoException {
         for (int j = 0; j < qtdColunas; j++) {
             // Parede de Cima
             if (labirinto[0][j] == ' ')
-                throw new Exception("Não existe parede em cima do labirinto");
+                throw new LabirintoException("Não existe parede em cima do labirinto");
             // Parede de Baixo
             if (labirinto[qtdLinhas - 1][j] == ' ')
-                throw new Exception("Não existe parede em baixo do labirinto");
+                throw new LabirintoException("Não existe parede em baixo do labirinto");
         }
 
         for (int i = 0; i < qtdLinhas; i++) {
             // Parede Esquerda
             if (labirinto[i][0] == ' ')
-                throw new Exception("Não existe parede na esquerda do labirinto");
+                throw new LabirintoException("Não existe parede na esquerda do labirinto");
             // Parede Direita
             if (labirinto[i][qtdColunas - 1] == ' ')
-                throw new Exception("Não existe parede na direita do labirinto");
+                throw new LabirintoException("Não existe parede na direita do labirinto");
         }
     }
 
@@ -241,27 +248,38 @@ public class Labirinto implements Cloneable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
 
-        if (this.getClass() != obj.getClass()) return false;
+        if (this.getClass() != obj.getClass())
+            return false;
 
         Labirinto lab = (Labirinto) obj;
 
-        if (this.qtdLinhas != lab.qtdLinhas) return false;
-        if (this.qtdColunas != lab.qtdColunas) return false;
-        if (this.numeroDeEntradas != lab.numeroDeEntradas) return false;
-        if (this.numeroDeSaidas != lab.numeroDeSaidas) return false;
-        if (this.encontrouSaida != lab.encontrouSaida) return false;
+        if (this.qtdLinhas != lab.qtdLinhas)
+            return false;
+        if (this.qtdColunas != lab.qtdColunas)
+            return false;
+        if (this.numeroDeEntradas != lab.numeroDeEntradas)
+            return false;
+        if (this.numeroDeSaidas != lab.numeroDeSaidas)
+            return false;
+        if (this.encontrouSaida != lab.encontrouSaida)
+            return false;
 
         for (int i = 0; i < qtdLinhas; i++) {
             for (int j = 0; j < qtdColunas; j++) {
-                if (this.labirinto[i][j] != lab.labirinto[i][j]) return false;
+                if (this.labirinto[i][j] != lab.labirinto[i][j])
+                    return false;
             }
         }
 
-        if (!this.atual.equals(lab.atual)) return false;
-        if (!this.posicaoEntrada.equals(lab.posicaoEntrada)) return false;
+        if (!this.atual.equals(lab.atual))
+            return false;
+        if (!this.posicaoEntrada.equals(lab.posicaoEntrada))
+            return false;
 
         return true;
     }
@@ -287,28 +305,29 @@ public class Labirinto implements Cloneable {
         ret = ret * 7 + posicaoEntrada.hashCode();
         ret = ret * 7 + (encontrouSaida ? 1 : 0);
 
-        if (ret < 0) ret = -ret;
+        if (ret < 0)
+            ret = -ret;
 
         return ret;
     }
 
     // construtor de copia
-    public Labirinto(Labirinto modelo) throws Exception {
-        if (modelo == null)
+    public Labirinto(Labirinto model) throws Exception {
+        if (model == null)
             throw new Exception("Modelo ausente");
 
-        this.qtdLinhas = modelo.qtdLinhas;
-        this.qtdColunas = modelo.qtdColunas;
-        this.numeroDeEntradas = modelo.numeroDeEntradas;
-        this.numeroDeSaidas = modelo.numeroDeSaidas;
-        this.encontrouSaida = modelo.encontrouSaida;
-        this.posicaoEntrada = modelo.posicaoEntrada;
-        this.atual = modelo.atual;
+        this.qtdLinhas = model.qtdLinhas;
+        this.qtdColunas = model.qtdColunas;
+        this.numeroDeEntradas = model.numeroDeEntradas;
+        this.numeroDeSaidas = model.numeroDeSaidas;
+        this.encontrouSaida = model.encontrouSaida;
+        this.posicaoEntrada = model.posicaoEntrada;
+        this.atual = model.atual;
 
         this.labirinto = new char[qtdLinhas][qtdColunas];
         for (int i = 0; i < qtdLinhas; i++) {
             for (int j = 0; j < qtdColunas; j++) {
-                this.labirinto[i][j] = modelo.labirinto[i][j];
+                this.labirinto[i][j] = model.labirinto[i][j];
             }
         }
     }
@@ -318,10 +337,9 @@ public class Labirinto implements Cloneable {
 
         try {
             ret = new Labirinto(this);
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored) {}
 
         return ret;
     }
 }
-
