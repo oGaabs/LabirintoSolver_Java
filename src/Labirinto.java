@@ -176,12 +176,12 @@ public class Labirinto implements Cloneable {
         int linha = atual.getLinha();
         int coluna = atual.getColuna();
 
+        // Posição à baixo
+        adicionarPosicaoAdjacente(filaDeAdjacentes, linha + 1, coluna);
         // Posição à direita
         adicionarPosicaoAdjacente(filaDeAdjacentes, linha, coluna + 1);
         // Posição à cima
         adicionarPosicaoAdjacente(filaDeAdjacentes, linha - 1, coluna);
-        // Posição à baixo
-        adicionarPosicaoAdjacente(filaDeAdjacentes, linha + 1, coluna);
         // Posição à esquerda
         adicionarPosicaoAdjacente(filaDeAdjacentes, linha, coluna - 1);
     }
